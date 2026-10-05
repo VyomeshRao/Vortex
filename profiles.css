@@ -1,4 +1,7 @@
 .account-trigger{cursor:pointer;font-family:var(--font)}
+.store-switch.account-trigger{width:100%;color:inherit;text-align:left;font-size:inherit;cursor:pointer}
+.store-switch.account-trigger:hover{border-color:#cbd9ca;background:#fbfdf9}
+.store-details{min-width:0;text-align:left}
 .account-trigger:focus-visible,.profile-option:focus-visible,.secondary-button:focus-visible,.logout-button:focus-visible{outline:2px solid #438a68;outline-offset:2px}
 .user-row.account-trigger{width:100%;border:0;background:transparent;text-align:left;color:inherit}
 .account-name{min-width:0}.account-name b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
