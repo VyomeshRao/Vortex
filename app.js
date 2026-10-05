@@ -165,8 +165,57 @@ document.querySelectorAll('.row-arrow').forEach(button => button.addEventListene
   const product = button.closest('.demand-row').querySelector('.product-info b').childNodes[0].textContent.trim();
   showToast(`${product}: sample demand is rising across nearby shops.`);
 }));
+const demandCharts = {
+  'This week': {
+    title: 'Weekly demand pulse',
+    values: [12, 18, 15, 22, 19, 31, 27],
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    max: 40,
+    ticks: [40, 30, 20, 10, 0],
+    unit: 'day'
+  },
+  'This month': {
+    title: 'Monthly demand pulse',
+    values: [68, 82, 74, 96],
+    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+    max: 120,
+    ticks: [120, 90, 60, 30, 0],
+    unit: 'week'
+  }
+};
+function renderDemandChart(period) {
+  const chart = demandCharts[period];
+  if (!chart) return;
+  const points = chart.values.map((value, index) => ({
+    x: index * (600 / (chart.values.length - 1)),
+    y: 160 - (value / chart.max) * 130
+  }));
+  const line = points.map((point, index) => `${index ? 'L' : 'M'}${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(' ');
+  const area = `${line} L600 180 L0 180 Z`;
+  document.querySelector('#demandChartTitle').textContent = chart.title;
+  document.querySelector('#demandYAxis').replaceChildren(...chart.ticks.map(value => {
+    const label = document.createElement('span');
+    label.textContent = value;
+    return label;
+  }));
+  const xLabels = document.querySelector('.x-labels');
+  xLabels.replaceChildren(...chart.labels.map(value => {
+    const label = document.createElement('span');
+    label.textContent = value;
+    return label;
+  }));
+  document.querySelector('.chart-line').setAttribute('d', line);
+  document.querySelector('.area').setAttribute('d', area);
+  const endPoint = points[points.length - 1];
+  const marker = document.querySelector('.chart svg circle');
+  marker.setAttribute('cx', endPoint.x);
+  marker.setAttribute('cy', endPoint.y);
+  document.querySelector('.chart svg').setAttribute('aria-label', `${chart.title}; sample requests per ${chart.unit}: ${chart.values.join(', ')}`);
+}
 document.querySelector('#chartPeriod').addEventListener('change', event => {
-  showToast(`Neighbourhood pulse updated to ${event.target.value.toLowerCase()}.`);
+  renderDemandChart(event.target.value);
+  showToast(`Showing separate sample totals by ${demandCharts[event.target.value].unit}.`);
 });
+renderDemandChart(document.querySelector('#chartPeriod').value);
 
 renderProfile();
