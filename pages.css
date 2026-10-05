@@ -23,3 +23,7 @@
 /* Rotate the hero illustration around a horizontal axis */
 .hero-art{animation-name:mesh-hero-horizontal}
 @keyframes mesh-hero-horizontal{from{transform:perspective(800px) rotateX(0deg)}to{transform:perspective(800px) rotateX(360deg)}}
+
+
+/* Make the hero artwork turn left-to-right */
+@keyframes mesh-hero-horizontal{from{transform:perspective(800px) rotateY(0deg)}to{transform:perspective(800px) rotateY(360deg)}}
