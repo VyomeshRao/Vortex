@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f2">
+  <meta name="description" content="Merchant Mesh turns missed customer requests into clear local demand signals for independent shops.">
+  <title>Merchant Mesh — See what your neighbourhood needs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#overview" aria-label="Merchant Mesh home"><span class="brand-mark"><i></i><i></i><i></i><i></i></span><span>merchant<span class="brand-light">mesh</span></span></a>
+      <div class="store-switch"><div class="store-avatar">VK</div><div><b>Vijay Kirana</b><small>Indiranagar, Bengaluru</small></div><span class="chevron">⌄</span></div>
+      <div class="nav-label">WORKSPACE</div>
+      <nav aria-label="Main navigation">
+        <a class="nav-item active" href="#overview"><span>◫</span> Overview</a>
+        <a class="nav-item" href="#demand"><span>⌁</span> Demand signals <em>8</em></a>
+        <a class="nav-item" href="#network"><span>◎</span> Merchant network</a>
+        <a class="nav-item" href="#opportunities"><span>↗</span> Opportunities <em class="new">3</em></a>
+      </nav>
+      <div class="sidebar-bottom"><div class="help-card"><div class="help-icon">✳</div><b>Your neighbourhood, in sync.</b><p>Every request makes your local network smarter.</p><a href="#how">How it works <span>→</span></a></div><div class="user-row"><div class="user-avatar">VR</div><div><b>Vyomesh Rao</b><small>Shop owner</small></div><span class="dots">•••</span></div></div>
+    </aside>
+    <main class="main-content" id="overview">
+      <header class="topbar"><div class="breadcrumb">Workspace <span>/</span> <b>Overview</b></div><div class="top-actions"><span class="live-pill"><i></i> Live neighbourhood data</span><button class="icon-button" aria-label="Notifications">♧<i class="notification-dot"></i></button><div class="top-avatar">VR</div></div></header>
+      <div class="page-content">
+        <section class="welcome-row"><div><div class="eyebrow"><span class="spark">✳</span> MONDAY, 05 OCTOBER 2026 <span class="eyebrow-divider">·</span> YOUR LOCAL PULSE</div><h1>Good morning, Vyomesh <span>✳</span></h1><p class="subhead">Here’s what your neighbourhood is asking for this week.</p></div><button class="primary-button" id="addRequest"><span>＋</span> Log a request</button></section>
+        <section class="stats-grid" aria-label="Neighbourhood summary">
+          <article class="stat-card"><div class="stat-top"><span>Requests captured</span><span class="stat-icon lilac">⌁</span></div><div class="stat-value" id="requestCount">248 <small>this month</small></div><div class="stat-foot"><span class="trend">↗ 18%</span> <span>vs. last month</span></div><div class="sparkline purple"><svg viewBox="0 0 120 30" preserveAspectRatio="none"><path d="M0 24 C12 18 12 22 24 16 S38 20 48 12 60 17 70 10 82 16 92 7 108 13 120 2"/></svg></div></article>
+          <article class="stat-card"><div class="stat-top"><span>Unmet demand</span><span class="stat-icon peach">◉</span></div><div class="stat-value">₹42.6k <small>potential</small></div><div class="stat-foot"><span class="trend">↗ 12%</span> <span>estimated opportunity</span></div><div class="sparkline orange"><svg viewBox="0 0 120 30" preserveAspectRatio="none"><path d="M0 22 C10 20 14 11 24 15 S38 8 48 13 62 5 72 10 84 8 94 4 107 11 120 1"/></svg></div></article>
+          <article class="stat-card"><div class="stat-top"><span>Nearby shops</span><span class="stat-icon mint">◎</span></div><div class="stat-value">12 <small>in your mesh</small></div><div class="stat-foot"><span class="trend">＋ 2 joined</span> <span>in the last 7 days</span></div><div class="avatar-stack"><span>AS</span><span>MK</span><span>RP</span><span>＋9</span><i>connected nearby</i></div></article>
+          <article class="stat-card"><div class="stat-top"><span>Requests fulfilled</span><span class="stat-icon blue">✓</span></div><div class="stat-value">76<small>%</small> <small class="value-note">fulfilment rate</small></div><div class="stat-foot"><span class="trend">↗ 6%</span> <span>since joining Mesh</span></div><div class="progress-line"><i></i></div></article>
+        </section>
+        <section class="content-grid">
+          <article class="panel demand-panel" id="demand"><div class="panel-heading"><div><div class="eyebrow">THE NEIGHBOURHOOD IS ASKING</div><h2>Top unmet demand</h2></div><button class="text-button" id="viewAll">View all <span>→</span></button></div><div class="demand-list" id="demandList">
+            <div class="demand-row"><div class="product-thumb thumb-blue">🥛</div><div class="product-info"><b>Oat milk <span class="hot">HIGH DEMAND</span></b><small>Asked by 18 customers · 5 nearby shops</small></div><div class="demand-meta"><b>32 <small>requests</small></b><span>↑ 24%</span></div><div class="spark-bars"><i style="height:35%"></i><i style="height:46%"></i><i style="height:41%"></i><i style="height:58%"></i><i style="height:51%"></i><i style="height:78%"></i><i style="height:68%"></i><i style="height:100%"></i></div><button class="row-arrow" aria-label="View oat milk opportunity">↗</button></div>
+            <div class="demand-row"><div class="product-thumb thumb-yellow">🌾</div><div class="product-info"><b>Gluten-free atta</b><small>Asked by 12 customers · 4 nearby shops</small></div><div class="demand-meta"><b>21 <small>requests</small></b><span>↑ 16%</span></div><div class="spark-bars"><i style="height:43%"></i><i style="height:35%"></i><i style="height:57%"></i><i style="height:47%"></i><i style="height:72%"></i><i style="height:64%"></i><i style="height:88%"></i><i style="height:100%"></i></div><button class="row-arrow" aria-label="View gluten-free atta opportunity">↗</button></div>
+            <div class="demand-row"><div class="product-thumb thumb-pink">🧴</div><div class="product-info"><b>Refill cleaning products</b><small>Asked by 9 customers · 3 nearby shops</small></div><div class="demand-meta"><b>16 <small>requests</small></b><span>↑ 9%</span></div><div class="spark-bars"><i style="height:30%"></i><i style="height:52%"></i><i style="height:44%"></i><i style="height:65%"></i><i style="height:51%"></i><i style="height:81%"></i><i style="height:71%"></i><i style="height:100%"></i></div><button class="row-arrow" aria-label="View refill products opportunity">↗</button></div>
+            <div class="demand-row"><div class="product-thumb thumb-green">🥜</div><div class="product-info"><b>Unsweetened peanut butter</b><small>Asked by 7 customers · 3 nearby shops</small></div><div class="demand-meta"><b>11 <small>requests</small></b><span>↑ 7%</span></div><div class="spark-bars"><i style="height:37%"></i><i style="height:54%"></i><i style="height:43%"></i><i style="height:60%"></i><i style="height:72%"></i><i style="height:65%"></i><i style="height:86%"></i><i style="height:100%"></i></div><button class="row-arrow" aria-label="View peanut butter opportunity">↗</button></div>
+          </div><div class="panel-footer"><span><i class="legend-dot"></i> Requests in your 2 km radius</span><button class="text-button" id="logFromPanel">＋ Log a customer request</button></div></article>
+          <article class="panel insight-panel" id="opportunities"><div class="panel-heading"><div><div class="eyebrow">MESH INTELLIGENCE <span class="ai-tag">AI</span></div><h2>A smart opportunity</h2></div><span class="spark insight-spark">✳</span></div><div class="insight-body"><div class="insight-label"><span class="insight-product">🥛</span> <span>PRODUCT OPPORTUNITY</span></div><h3>Stock oat milk.<br><span>The demand is already here.</span></h3><p>32 requests across 5 nearby shops this month — with <b>18 customers</b> asking within a 1 km radius of your store.</p><div class="mini-metrics"><div><small>EST. MONTHLY SALES</small><b>₹8,400</b></div><div><small>CONFIDENCE</small><b class="confidence">High <i>●●●●○</i></b></div></div><button class="dark-button" id="coordinateBtn">Explore group buying <span>→</span></button><small class="insight-disclaimer">Based on requests shared by your local mesh.</small></div></article>
+        </section>
+        <section class="bottom-grid">
+          <article class="panel activity-panel"><div class="panel-heading"><div><div class="eyebrow">DEMAND OVER TIME</div><h2>Your neighbourhood pulse</h2></div><select aria-label="Chart period" id="chartPeriod"><option>This week</option><option>This month</option></select></div><div class="chart-wrap"><div class="y-labels"><span>40</span><span>30</span><span>20</span><span>10</span><span>0</span></div><div class="chart"><div class="grid-lines"><i></i><i></i><i></i><i></i><i></i></div><svg viewBox="0 0 600 180" preserveAspectRatio="none" aria-label="Demand line chart"><defs><linearGradient id="area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#438a68" stop-opacity=".17"/><stop offset="1" stop-color="#438a68" stop-opacity="0"/></linearGradient></defs><path class="area" d="M0 135 C32 130 48 104 84 111 S128 145 168 106 213 92 250 103 293 64 334 78 380 58 416 74 465 38 500 51 555 25 600 34 L600 180 L0 180 Z"/><path class="chart-line" d="M0 135 C32 130 48 104 84 111 S128 145 168 106 213 92 250 103 293 64 334 78 380 58 416 74 465 38 500 51 555 25 600 34"/><circle cx="600" cy="34" r="4"/></svg><div class="x-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></div></div></article>
+          <article class="panel network-panel" id="network"><div class="panel-heading"><div><div class="eyebrow">YOUR LOCAL MESH</div><h2>Growing together</h2></div><button class="text-button">12 shops <span>→</span></button></div><div class="network-visual"><div class="network-orbit orbit-one"></div><div class="network-orbit orbit-two"></div><div class="network-center">VK</div><span class="node n1">AS</span><span class="node n2">MK</span><span class="node n3">RP</span><span class="node n4">SD</span><span class="node n5">＋</span><svg viewBox="0 0 400 160" preserveAspectRatio="none"><path d="M200 80L70 36M200 80L330 30M200 80L52 127M200 80L346 122M200 80L137 20M200 80L277 142"/></svg></div><div class="network-caption"><span class="online-dot"></span><b>12 independent shops</b><span>sharing demand around you</span></div></article>
+        </section>
+        <footer>Built for the people who keep neighbourhoods running. <span>MERCHANT MESH <i>✳</i></span></footer>
+      </div>
+    </main>
+  </div>
+  <dialog id="requestDialog"><form method="dialog" id="requestForm"><button class="modal-close" aria-label="Close">×</button><div class="eyebrow">CAPTURE THE MOMENT</div><h2>What did a customer ask for?</h2><p>Small requests add up to a clearer picture of what your neighbourhood needs.</p><label for="productName">Product or item</label><input id="productName" name="product" placeholder="e.g. oat milk, gluten-free atta" required maxlength="60"><label for="requestCountInput">How many customers asked?</label><select id="requestCountInput"><option value="1">Just one</option><option value="2">2–3 customers</option><option value="4">4–5 customers</option><option value="6">More than 5</option></select><div class="form-actions"><button class="cancel-button" value="cancel">Cancel</button><button class="primary-button" id="saveRequest" value="default">Add request <span>→</span></button></div></form></dialog>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
