@@ -61,7 +61,7 @@ function renderProfile() {
   document.querySelector('.store-switch b').textContent = activeProfile.store;
   document.querySelector('.store-switch small').textContent = activeProfile.area;
   const greeting = document.querySelector('#greeting');
-  greeting.firstChild.textContent = `Good morning, ${firstName} `;
+  greeting.firstChild.textContent = `Welcome, ${firstName} `;
   document.querySelector('#requestCount').innerHTML = `${activeProfile.requests || 0} <small>this month</small>`;
   document.querySelector('#authSubtitle').textContent = 'Choose a saved demo profile to continue, or create a new one.';
 }
@@ -130,8 +130,9 @@ document.querySelector('#requestForm').addEventListener('submit', event => {
   event.currentTarget.reset();
   showToast(`Request added — ${product} is now part of your local demo data.`);
 });
-document.querySelector('#accountButton').addEventListener('click', () => accountDialog.showModal());
-document.querySelector('#topAccountButton').addEventListener('click', () => accountDialog.showModal());
+document.querySelectorAll('.account-trigger').forEach(button => {
+  button.addEventListener('click', () => accountDialog.showModal());
+});
 document.querySelector('#closeAccount').addEventListener('click', () => accountDialog.close());
 document.querySelector('#switchProfileButton').addEventListener('click', () => {
   accountDialog.close();
