@@ -45,6 +45,7 @@ demandLayout.className = 'page-layout demand-layout';
 demandLayout.append(existing.demand, existing.activity);
 demandPage.append(demandLayout);
 demandPage.insertAdjacentHTML('beforeend', `<aside class="page-guide"><span class="guide-symbol">⌁</span><div><b>Read requests as clues, not confirmed orders.</b><p>Look for repeat interest across customers and shops. Counts and trends here are illustrative sample data.</p></div></aside>`);
+demandPage.insertAdjacentHTML('beforeend', `<section class="request-history panel"><div class="panel-heading"><div><div class="eyebrow">THIS BROWSER ONLY</div><h2>Your recent requests</h2></div><span class="local-tag">PRIVATE DEMO</span></div><p>Requests you add appear here. They are stored on this device and are not shared with other shops.</p><ul id="userRequestList" class="user-request-list"></ul><div id="emptyRequestHistory" class="empty-request-history">No requests logged yet. Add one to start your local list.</div></section>`);
 
 const networkPage = makePage('network', 'NEIGHBOURHOOD CONNECTIONS', 'Merchant network', 'Compare recurring customer needs across independent nearby shops. Shared patterns can guide supplier conversations while each shop keeps its own buying decisions.');
 const networkLayout = document.createElement('div');
@@ -73,6 +74,7 @@ opportunitiesPage.insertAdjacentHTML('beforeend', `<aside class="page-guide"><sp
 
 const footer = existing.footer;
 pageContent.replaceChildren(overviewPage, demandPage, networkPage, opportunitiesPage, footer);
+if (typeof renderRequestHistory === 'function') renderRequestHistory();
 
 function navigateTo(pageName) {
   const page = document.querySelector(`#view-${pageName}`) || overviewPage;
