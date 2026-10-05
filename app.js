@@ -54,9 +54,6 @@ function renderProfile() {
     return;
   }
   const firstName = activeProfile.name.trim().split(/\s+/)[0];
-  document.querySelector('#sidebarName').textContent = activeProfile.name;
-  document.querySelector('#sidebarRole').textContent = activeProfile.store;
-  document.querySelector('#sidebarInitials').textContent = initials(activeProfile.name);
   document.querySelector('#topAccountButton').textContent = initials(activeProfile.name);
   document.querySelector('.store-switch b').textContent = activeProfile.store;
   document.querySelector('.store-switch small').textContent = activeProfile.area;
