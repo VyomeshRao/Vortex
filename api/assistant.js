@@ -41,7 +41,7 @@ module.exports = async function handler(req, res) {
   }
   const input = messages.map(message => `${message.role === 'assistant' ? 'Assistant' : 'User'}: ${message.content.trim()}`).join('\n\n');
   try {
-    const upstream = await fetch('https://generativelanguage.googleapis.com/v1beta/interactions', {
+    let upstream = await fetch('https://generativelanguage.googleapis.com/v1beta/interactions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
       body: JSON.stringify({
@@ -53,8 +53,25 @@ module.exports = async function handler(req, res) {
       }),
       signal: AbortSignal.timeout(25000)
     });
+    if (upstream.status === 503) {
+      await new Promise(resolve => setTimeout(resolve, 700));
+      upstream = await fetch('https://generativelanguage.googleapis.com/v1beta/interactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
+        body: JSON.stringify({
+          model: 'gemini-3.8-flash',
+          input,
+          system_instruction: SYSTEM_INSTRUCTION,
+          store: false,
+          generation_config: { max_output_tokens: 450, temperature: 0.5 }
+        }),
+        signal: AbortSignal.timeout(25000)
+      });
+    }
     if (!upstream.ok) {
-      console.error('Gemini API returned status', upstream.status);
+      let providerMessage = '';
+      try { providerMessage = (await upstream.json())?.error?.message || ''; } catch { /* Keep upstream errors private. */ }
+      console.error('Gemini API returned status', upstream.status, providerMessage.slice(0, 240));
       return send(res, 502, { error: 'Gemini could not answer right now.' });
     }
     const result = await upstream.json();
