@@ -328,10 +328,19 @@ updateCurrentDate();
 
 const assistantPanel = document.querySelector('#assistantPanel');
 const assistantMessages = document.querySelector('#assistantMessages');
-function appendAssistantMessage(text, kind, action) {
+const assistantStatus = document.querySelector('#assistantStatus');
+const assistantHistory = [];
+let assistantBusy = false;
+function appendAssistantMessage(text, kind, action, source) {
   const message = document.createElement('div');
   message.className = `assistant-message ${kind === 'user' ? 'assistant-user' : 'assistant-reply'}`;
   message.textContent = text;
+  if (source && kind !== 'user') {
+    const label = document.createElement('small');
+    label.className = 'assistant-source';
+    label.textContent = source;
+    message.append(label);
+  }
   if (action) {
     const button = document.createElement('button');
     button.type = 'button';
@@ -361,7 +370,7 @@ function answerAssistant(question) {
     };
   }
   if (/categor|classif|understand|model|\bai\b|artificial intelligence/.test(text)) {
-    return { text: 'The request form uses a small Naive Bayes text classifier trained on built-in sample product phrases. It runs in this browser and suggests a category; please review it. The site is not connected to a hosted generative AI model.' };
+    return { text: 'The request form uses a small text classifier trained on built-in sample product phrases. It runs in this browser and suggests a category; please review it. The chat can use Gemini when the secure hosting endpoint is configured.' };
   }
   if (/privacy|private|anonymous|data|save|stored|share/.test(text)) {
     return { text: 'Profiles and saved request notes stay in this browser on this device; this demo does not aggregate them across shops. Voice transcription uses the browser speech service, whose audio handling depends on your browser provider.' };
@@ -372,14 +381,40 @@ function answerAssistant(question) {
   if (/chart|trend|forecast|month|week|request count/.test(text)) {
     return { text: 'The demand chart switches between separate sample totals by day and by week. These numbers are illustrative; there is no live demand feed or forecasting service connected.' };
   }
-  return { text: 'I can help with demand signals, stock ideas, voice capture, product categories, privacy, and the sample merchant network. This demo assistant uses built-in guidance rather than a hosted AI model.' };
+  return { text: 'I can help with demand signals, stock ideas, voice capture, product categories, privacy, and the sample merchant network. Gemini chat requires the secure hosting endpoint to be configured.' };
 }
-function submitAssistantQuestion(question) {
+async function submitAssistantQuestion(question) {
   const clean = question.trim();
-  if (!clean) return;
+  if (!clean || assistantBusy) return;
+  assistantBusy = true;
   appendAssistantMessage(clean, 'user');
-  const answer = answerAssistant(clean);
-  appendAssistantMessage(answer.text, 'assistant', answer.action);
+  const thinking = document.createElement('div');
+  thinking.className = 'assistant-message assistant-reply assistant-thinking';
+  thinking.textContent = 'Connecting to Gemini…';
+  assistantMessages.append(thinking);
+  assistantMessages.scrollTop = assistantMessages.scrollHeight;
+  try {
+    const response = await fetch(new URL('api/assistant', window.location.href), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: [...assistantHistory, { role: 'user', content: clean }].slice(-12) })
+    });
+    if (!response.ok) throw new Error('Assistant endpoint unavailable');
+    const data = await response.json();
+    if (typeof data.reply !== 'string' || !data.reply.trim()) throw new Error('Empty assistant reply');
+    assistantHistory.push({ role: 'user', content: clean }, { role: 'assistant', content: data.reply });
+    assistantHistory.splice(0, Math.max(0, assistantHistory.length - 12));
+    assistantStatus.textContent = 'Gemini connected · Merchant Mesh guide';
+    thinking.remove();
+    appendAssistantMessage(data.reply, 'assistant', null, 'Gemini');
+  } catch {
+    thinking.remove();
+    assistantStatus.textContent = 'Gemini not connected · demo mode';
+    const answer = answerAssistant(clean);
+    appendAssistantMessage(`${answer.text}\n\nGemini is not connected yet, so this is a built-in demo reply.`, 'assistant', answer.action, 'Demo reply');
+  } finally {
+    assistantBusy = false;
+  }
 }
 const assistantToggle = document.querySelector('#assistantToggle');
 function closeAssistant() {
@@ -405,3 +440,4 @@ assistantMessages.addEventListener('click', event => {
   const suggestion = event.target.closest('[data-prompt]');
   if (suggestion) submitAssistantQuestion(suggestion.dataset.prompt);
 });
+
