@@ -331,6 +331,14 @@ const assistantMessages = document.querySelector('#assistantMessages');
 const assistantStatus = document.querySelector('#assistantStatus');
 const assistantHistory = [];
 let assistantBusy = false;
+fetch(new URL('api/assistant', window.location.href))
+  .then(response => response.ok ? response.json() : Promise.reject(new Error('Assistant endpoint unavailable')))
+  .then(status => {
+    assistantStatus.textContent = status.configured ? 'Gemini ready · Merchant Mesh guide' : 'Gemini not configured · demo mode';
+  })
+  .catch(() => {
+    assistantStatus.textContent = 'Gemini not connected · demo mode';
+  });
 function appendAssistantMessage(text, kind, action, source) {
   const message = document.createElement('div');
   message.className = `assistant-message ${kind === 'user' ? 'assistant-user' : 'assistant-reply'}`;
