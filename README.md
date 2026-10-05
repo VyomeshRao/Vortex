@@ -21,6 +21,10 @@ Vanilla HTML, CSS, and JavaScript. Fonts load from Google Fonts when online and 
 
 Open `index.html` directly, or serve this directory with any static file server.
 
+## Deployment
+
+The repository includes a GitHub Pages workflow in `.github/workflows/pages.yml`. Once Pages is enabled for this repository with GitHub Actions as the build source, pushes to `main` deploy the site.
+
 ## Next steps for a production MVP
 
 Add merchant authentication, persistent request storage, consent-based neighbourhood aggregation, and real inventory/supplier connections. AI categorization and demand forecasts should be grounded in validated request data before being used for purchasing decisions.
