@@ -325,3 +325,83 @@ renderDemandChart(document.querySelector('#chartPeriod').value);
 
 renderProfile();
 updateCurrentDate();
+
+const assistantPanel = document.querySelector('#assistantPanel');
+const assistantMessages = document.querySelector('#assistantMessages');
+function appendAssistantMessage(text, kind, action) {
+  const message = document.createElement('div');
+  message.className = `assistant-message ${kind === 'user' ? 'assistant-user' : 'assistant-reply'}`;
+  message.textContent = text;
+  if (action) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'assistant-action';
+    button.textContent = action.label;
+    button.addEventListener('click', action.run);
+    message.append(button);
+  }
+  assistantMessages.append(message);
+  assistantMessages.scrollTop = assistantMessages.scrollHeight;
+}
+function answerAssistant(question) {
+  const text = question.toLowerCase();
+  if (/\b(hi|hello|hey|good morning|good afternoon)\b/.test(text)) {
+    return { text: 'Hello! Ask me about demand, recording requests, product categories, or how this demo stores data.' };
+  }
+  if (/stock|recommend|opportunit|what.*sell|what.*buy|what.*order/.test(text)) {
+    return {
+      text: 'Oat milk is highlighted in this demo: 32 sample requests across 5 sample shops. It is a signal to investigate, not a sales forecast or a live recommendation. Consider a small test and check your costs.',
+      action: { label: 'Open Opportunities', run: () => { location.hash = 'opportunities'; closeAssistant(); } }
+    };
+  }
+  if (/voice|speak|microphone|record|log.*request|add.*request/.test(text)) {
+    return {
+      text: 'Open Demand Signals and choose “Log a customer request”. In the form, tap “Use voice”, allow microphone access, review the transcription and category, then save. Browser speech recognition may use your browser’s speech service.',
+      action: { label: 'Open request form', run: () => { location.hash = 'demand'; document.querySelector('#requestDialog').showModal(); closeAssistant(); } }
+    };
+  }
+  if (/categor|classif|understand|model|\bai\b|artificial intelligence/.test(text)) {
+    return { text: 'The request form uses a small Naive Bayes text classifier trained on built-in sample product phrases. It runs in this browser and suggests a category; please review it. The site is not connected to a hosted generative AI model.' };
+  }
+  if (/privacy|private|anonymous|data|save|stored|share/.test(text)) {
+    return { text: 'Profiles and saved request notes stay in this browser on this device; this demo does not aggregate them across shops. Voice transcription uses the browser speech service, whose audio handling depends on your browser provider.' };
+  }
+  if (/network|nearby shop|merchant|aggregate|group buy|buying together/.test(text)) {
+    return { text: 'The Merchant Network page illustrates how shops could compare shared demand. The shops and counts shown are sample data; no other merchants are connected and no group orders are being created.' };
+  }
+  if (/chart|trend|forecast|month|week|request count/.test(text)) {
+    return { text: 'The demand chart switches between separate sample totals by day and by week. These numbers are illustrative; there is no live demand feed or forecasting service connected.' };
+  }
+  return { text: 'I can help with demand signals, stock ideas, voice capture, product categories, privacy, and the sample merchant network. This demo assistant uses built-in guidance rather than a hosted AI model.' };
+}
+function submitAssistantQuestion(question) {
+  const clean = question.trim();
+  if (!clean) return;
+  appendAssistantMessage(clean, 'user');
+  const answer = answerAssistant(clean);
+  appendAssistantMessage(answer.text, 'assistant', answer.action);
+}
+const assistantToggle = document.querySelector('#assistantToggle');
+function closeAssistant() {
+  assistantPanel.hidden = true;
+  assistantToggle.setAttribute('aria-expanded', 'false');
+}
+assistantToggle.addEventListener('click', () => {
+  assistantPanel.hidden = !assistantPanel.hidden;
+  assistantToggle.setAttribute('aria-expanded', String(!assistantPanel.hidden));
+  if (!assistantPanel.hidden) document.querySelector('#assistantInput').focus();
+});
+document.querySelector('#assistantClose').addEventListener('click', () => {
+  closeAssistant();
+  assistantToggle.focus();
+});
+document.querySelector('#assistantForm').addEventListener('submit', event => {
+  event.preventDefault();
+  const input = document.querySelector('#assistantInput');
+  submitAssistantQuestion(input.value);
+  input.value = '';
+});
+assistantMessages.addEventListener('click', event => {
+  const suggestion = event.target.closest('[data-prompt]');
+  if (suggestion) submitAssistantQuestion(suggestion.dataset.prompt);
+});
