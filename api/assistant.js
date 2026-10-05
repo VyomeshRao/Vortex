@@ -14,7 +14,11 @@ function send(res, status, data) {
 
 module.exports = async function handler(req, res) {
   const origin = req.headers.origin;
-  if (origin && !ALLOWED_ORIGINS.has(origin)) return send(res, 403, { error: 'Origin not allowed.' });
+  let sameOrigin = false;
+  if (origin && req.headers.host) {
+    try { sameOrigin = new URL(origin).host.toLowerCase() === String(req.headers.host).toLowerCase(); } catch { /* Invalid origins are rejected below. */ }
+  }
+  if (origin && !sameOrigin && !ALLOWED_ORIGINS.has(origin)) return send(res, 403, { error: 'Origin not allowed.' });
   if (origin) res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
