@@ -41,25 +41,14 @@ module.exports = async function handler(req, res) {
   }
   const input = messages.map(message => `${message.role === 'assistant' ? 'Assistant' : 'User'}: ${message.content.trim()}`).join('\n\n');
   try {
-    let upstream = await fetch('https://generativelanguage.googleapis.com/v1beta/interactions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
-      body: JSON.stringify({
-        model: 'gemini-3.8-flash',
-        input,
-        system_instruction: SYSTEM_INSTRUCTION,
-        store: false,
-        generation_config: { max_output_tokens: 450, temperature: 0.5 }
-      }),
-      signal: AbortSignal.timeout(25000)
-    });
-    if (upstream.status === 503) {
-      await new Promise(resolve => setTimeout(resolve, 700));
+    let upstream;
+    const models = ['gemini-3.8-flash', 'gemini-3.7-flash'];
+    for (const [index, model] of models.entries()) {
       upstream = await fetch('https://generativelanguage.googleapis.com/v1beta/interactions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
         body: JSON.stringify({
-          model: 'gemini-3.8-flash',
+          model,
           input,
           system_instruction: SYSTEM_INSTRUCTION,
           store: false,
@@ -67,6 +56,8 @@ module.exports = async function handler(req, res) {
         }),
         signal: AbortSignal.timeout(25000)
       });
+      if (![429, 503].includes(upstream.status) || index === models.length - 1) break;
+      await new Promise(resolve => setTimeout(resolve, 700));
     }
     if (!upstream.ok) {
       let providerMessage = '';
