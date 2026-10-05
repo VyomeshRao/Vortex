@@ -43,6 +43,14 @@ function showToast(message) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
 }
+function updateCurrentDate() {
+  const now = new Date();
+  document.querySelector('#currentDate').textContent = new Intl.DateTimeFormat('en-GB', {
+    weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'
+  }).format(now).toUpperCase();
+  const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  setTimeout(updateCurrentDate, nextMidnight.getTime() - now.getTime() + 50);
+}
 function renderProfile() {
   const app = document.querySelector('.app-shell');
   const auth = document.querySelector('#authScreen');
@@ -219,3 +227,4 @@ document.querySelector('#chartPeriod').addEventListener('change', event => {
 renderDemandChart(document.querySelector('#chartPeriod').value);
 
 renderProfile();
+updateCurrentDate();
