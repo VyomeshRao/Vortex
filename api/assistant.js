@@ -27,6 +27,7 @@ module.exports = async function handler(req, res) {
     res.statusCode = 204;
     return res.end();
   }
+  if (req.method === 'GET') return send(res, 200, { configured: Boolean(process.env.GEMINI_API_KEY) });
   if (req.method !== 'POST') return send(res, 405, { error: 'Use POST.' });
   if (!process.env.GEMINI_API_KEY) return send(res, 503, { error: 'Gemini is not configured on this deployment.' });
 
