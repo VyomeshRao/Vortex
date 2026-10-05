@@ -18,3 +18,8 @@
 .hero-art{transform-origin:50% 50%;animation:mesh-hero-revolution 24s linear infinite;will-change:transform}
 @keyframes mesh-hero-revolution{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.hero-art{animation:none;will-change:auto}}
+
+
+/* Rotate the hero illustration around a horizontal axis */
+.hero-art{animation-name:mesh-hero-horizontal}
+@keyframes mesh-hero-horizontal{from{transform:perspective(800px) rotateX(0deg)}to{transform:perspective(800px) rotateX(360deg)}}
