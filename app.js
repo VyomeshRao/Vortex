@@ -51,6 +51,61 @@ function updateCurrentDate() {
   const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
   setTimeout(updateCurrentDate, nextMidnight.getTime() - now.getTime() + 50);
 }
+const categoryExamples = {
+  'Dairy & alternatives': ['milk', 'oat milk', 'soy milk', 'almond milk', 'yogurt', 'yoghurt', 'curd', 'paneer', 'cheese', 'butter', 'cream'],
+  'Grains & staples': ['atta', 'gluten free atta', 'rice', 'basmati rice', 'millet', 'flour', 'bread', 'oats', 'pasta', 'noodles', 'lentils', 'dal'],
+  'Home & personal care': ['detergent', 'laundry liquid', 'cleaning products', 'refill cleaner', 'dish soap', 'floor cleaner', 'hand wash', 'shampoo', 'toothpaste'],
+  'Pantry & snacks': ['peanut butter', 'unsweetened peanut butter', 'almonds', 'roasted nuts', 'biscuits', 'chips', 'coffee', 'tea', 'honey', 'cooking oil', 'spices', 'cereal'],
+  'Fresh produce': ['tomatoes', 'onions', 'potatoes', 'spinach', 'apples', 'bananas', 'lemons', 'vegetables', 'fruits', 'coriander']
+};
+function tokenize(text) {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().split(/\s+/).filter(Boolean);
+}
+const categoryModel = (() => {
+  const vocabulary = new Set();
+  const models = Object.entries(categoryExamples).map(([name, examples]) => {
+    const counts = new Map();
+    let total = 0;
+    examples.flatMap(tokenize).forEach(token => {
+      vocabulary.add(token);
+      counts.set(token, (counts.get(token) || 0) + 1);
+      total += 1;
+    });
+    return { name, examples: examples.length, counts, total };
+  });
+  return { vocabulary, models, totalExamples: models.reduce((sum, model) => sum + model.examples, 0) };
+})();
+function categorizeRequest(item) {
+  const tokens = tokenize(item).filter(token => categoryModel.vocabulary.has(token));
+  if (!tokens.length) return 'General groceries';
+  const scored = categoryModel.models.map(model => {
+    let score = Math.log(model.examples / categoryModel.totalExamples);
+    const denominator = model.total + categoryModel.vocabulary.size;
+    for (const token of tokens) score += Math.log(((model.counts.get(token) || 0) + 1) / denominator);
+    return { name: model.name, score };
+  });
+  return scored.sort((a, b) => b.score - a.score)[0].name;
+}
+function renderRequestHistory() {
+  const list = document.querySelector('#userRequestList');
+  if (!list) return;
+  const requests = Array.isArray(activeProfile?.requestLog) ? activeProfile.requestLog.slice(-5).reverse() : [];
+  list.replaceChildren(...requests.map(request => {
+    const row = document.createElement('li');
+    const details = document.createElement('span');
+    const name = document.createElement('b');
+    const meta = document.createElement('small');
+    name.textContent = request.item;
+    meta.textContent = `${request.category} · ${request.countLabel}`;
+    details.append(name, meta);
+    const date = document.createElement('time');
+    date.dateTime = request.createdAt;
+    date.textContent = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short' }).format(new Date(request.createdAt));
+    row.append(details, date);
+    return row;
+  }));
+  document.querySelector('#emptyRequestHistory').hidden = requests.length > 0;
+}
 function renderProfile() {
   const app = document.querySelector('.app-shell');
   const auth = document.querySelector('#authScreen');
@@ -68,6 +123,7 @@ function renderProfile() {
   const greeting = document.querySelector('#greeting');
   greeting.firstChild.textContent = `Welcome, ${firstName} `;
   document.querySelector('#requestCount').innerHTML = `${activeProfile.requests || 0} <small>this month</small>`;
+  renderRequestHistory();
   document.querySelector('#authSubtitle').textContent = 'Choose a saved demo profile to continue, or create a new one.';
 }
 function renderProfileChoices() {
@@ -128,13 +184,54 @@ document.querySelector('#requestForm').addEventListener('submit', event => {
   const product = document.querySelector('#productName').value.trim();
   const quantity = Number(document.querySelector('#requestCountInput').value);
   if (!product || !activeProfile) return;
+  const countLabel = document.querySelector('#requestCountInput').selectedOptions[0].textContent;
+  const category = categorizeRequest(product);
+  activeProfile.requestLog = Array.isArray(activeProfile.requestLog) ? activeProfile.requestLog : [];
+  activeProfile.requestLog.push({ item: product, category, countLabel, createdAt: new Date().toISOString() });
   activeProfile.requests = (Number(activeProfile.requests) || 0) + quantity;
   saveProfiles();
   renderProfile();
   document.querySelector('#requestDialog').close();
   event.currentTarget.reset();
-  showToast(`Request added — ${product} is now part of your local demo data.`);
+  document.querySelector('#categoryPreview').innerHTML = `Suggested category: ${category} <small>On-device ML demo model · check the suggestion</small>`;
+  document.querySelector('#voiceStatus').textContent = 'Request saved to your local profile.';
+  showToast(`Request saved locally — ${product} · ${category}.`);
 });
+const productInput = document.querySelector('#productName');
+productInput.addEventListener('input', () => {
+  const category = categorizeRequest(productInput.value);
+  document.querySelector('#categoryPreview').innerHTML = `Suggested category: ${category} <small>On-device ML demo model · check the suggestion</small>`;
+});
+const voiceButton = document.querySelector('#voiceInput');
+const voiceStatus = document.querySelector('#voiceStatus');
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (!SpeechRecognition) {
+  voiceButton.addEventListener('click', () => {
+    voiceStatus.textContent = 'Voice input is not supported in this browser. Type the request instead.';
+  });
+} else {
+  const recognition = new SpeechRecognition();
+  recognition.lang = 'en-IN';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  voiceButton.addEventListener('click', () => {
+    voiceStatus.textContent = 'Listening… speak the product name now.';
+    try { recognition.start(); } catch { voiceStatus.textContent = 'Voice capture is already starting. Please try again in a moment.'; }
+  });
+  recognition.addEventListener('result', event => {
+    productInput.value = event.results[0][0].transcript.trim().slice(0, 60);
+    productInput.dispatchEvent(new Event('input', { bubbles: true }));
+    voiceStatus.textContent = 'Voice captured. Check the text and category, then add the request.';
+  });
+  recognition.addEventListener('error', event => {
+    voiceStatus.textContent = event.error === 'not-allowed'
+      ? 'Microphone permission was blocked. Allow microphone access in Chrome site settings and try again.'
+      : 'Could not capture speech. Try again or type the request.';
+  });
+  recognition.addEventListener('end', () => {
+    if (voiceStatus.textContent.startsWith('Listening')) voiceStatus.textContent = 'No speech detected. Try again or type the request.';
+  });
+}
 document.querySelectorAll('.account-trigger').forEach(button => {
   button.addEventListener('click', () => accountDialog.showModal());
 });
