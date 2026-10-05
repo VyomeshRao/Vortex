@@ -4,14 +4,16 @@ Merchant Mesh is a responsive demo dashboard that helps independent shops turn m
 
 ## Demo
 
-Open `index.html` in a browser. No build step, account, database, or API key is required.
+Open `index.html` in a browser. No build step, database, or API key is required.
 
 ## What works
 
 - Responsive merchant overview with sample neighbourhood demand and network insights.
-- Log a customer request and adjust the month-to-date request count.
+- Create, switch between, and log out of demo profiles.
+- Log a customer request and keep a separate month-to-date count for each profile.
 - Explore demand rows, change the pulse period, and try the group buying action.
-- Data is illustrative and lives in the page; entries are not saved to a server.
+- Dashboard demand and recommendations are illustrative sample data, not live merchant data.
+- Profiles and request counts are saved in this browser only. There is no password login, cloud sync, or server account.
 
 ## Stack
 
@@ -20,10 +22,6 @@ Vanilla HTML, CSS, and JavaScript. Fonts load from Google Fonts when online and 
 ## Run locally
 
 Open `index.html` directly, or serve this directory with any static file server.
-
-## Deployment
-
-The repository includes a GitHub Pages workflow in `.github/workflows/pages.yml`. Once Pages is enabled for this repository with GitHub Actions as the build source, pushes to `main` deploy the site.
 
 ## Next steps for a production MVP
 
