@@ -10,7 +10,7 @@ Open `index.html` in a browser. No build step, database, or API key is required.
 
 The assistant can call Gemini through `api/assistant.js`, a Vercel serverless function. The Gemini key stays on the server and is never placed in browser code. Until the function is deployed and configured, the chat uses clearly labeled built-in demo replies.
 
-To enable Gemini, import this repository into Vercel, add `GEMINI_API_KEY` in the project’s Environment Variables, then redeploy. Create the key in [Google AI Studio](https://aistudio.google.com/app/apikey). For the current GitHub Pages site, set `APP_ORIGIN` to `https://vyomeshrao.github.io` in Vercel and open the Vercel deployment URL to use the connected assistant; GitHub Pages itself cannot run serverless functions. The deployed Vercel site serves the same project files and `/api/assistant` together.
+To enable Gemini, import this repository into Vercel, add `GEMINI_API_KEY` in the project’s Environment Variables, then redeploy. Create the key in [Google AI Studio](https://aistudio.google.com/app/apikey). Open the Vercel deployment URL to use the connected assistant; GitHub Pages itself cannot run serverless functions and continues to show demo replies. The deployed Vercel site serves the same project files and `/api/assistant` together.
 
 Only chat text is sent to Gemini. Profiles and request notes saved in the browser are not included in assistant requests. The backend sets `store: false` for Gemini interactions.
 
