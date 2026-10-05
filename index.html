@@ -10,8 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="profiles.css?v=20261005">
+  <link rel="stylesheet" href="profiles.css?v=assistant-v1">
   <link rel="stylesheet" href="pages.css?v=workspace-info-01">
+  <link rel="stylesheet" href="assistant.css?v=assistant-v1">
 </head>
 <body>
   <div class="app-shell">
@@ -58,8 +59,19 @@
   <dialog id="profileDialog"><form method="dialog" id="profileForm"><button class="modal-close" aria-label="Close">×</button><div class="eyebrow">NEW DEMO PROFILE</div><h2>Create a profile</h2><p>This profile stays in this browser. You can switch profiles or log out whenever you like.</p><label for="profileName">Your name</label><input id="profileName" name="name" placeholder="e.g. Asha Kumar" required maxlength="50"><label for="profileStore">Shop name</label><input id="profileStore" name="store" placeholder="e.g. Asha General Store" required maxlength="50"><label for="profileArea">Neighbourhood</label><input id="profileArea" name="area" placeholder="e.g. Indiranagar, Bengaluru" required maxlength="70"><div class="form-actions"><button class="cancel-button" value="cancel">Cancel</button><button class="primary-button" id="saveProfile" value="default">Create profile <span>→</span></button></div></form></dialog>
   <dialog id="accountDialog"><div class="account-dialog-content"><button class="modal-close" id="closeAccount" aria-label="Close">×</button><div class="eyebrow">ACCOUNT</div><h2 id="accountHeading">Your profile</h2><p id="accountDescription">Switch to another saved demo profile or add a new one.</p><div class="account-actions"><button class="secondary-button" id="switchProfileButton" type="button">Switch profile</button><button class="secondary-button" id="createFromAccount" type="button">＋ Create profile</button><button class="logout-button" id="logoutButton" type="button">Log out</button></div><p class="privacy-note">Demo profiles are stored locally in this browser only.</p></div></dialog>
   <dialog id="requestDialog"><form method="dialog" id="requestForm"><button class="modal-close" aria-label="Close">×</button><div class="eyebrow">CAPTURE THE MOMENT</div><h2>What did a customer ask for?</h2><p>Small requests add up to a clearer picture of what your neighbourhood needs.</p><label for="productName">Product or item</label><div class="voice-capture"><input id="productName" name="product" placeholder="e.g. oat milk, gluten-free atta" required maxlength="60"><button type="button" id="voiceInput" class="voice-button"><span aria-hidden="true">🎙</span> Use voice</button></div><p class="capture-status" id="voiceStatus" aria-live="polite">Voice recognition uses your browser’s speech service. Request text is saved in this browser.</p><div class="category-preview" id="categoryPreview" aria-live="polite">Suggested category: General groceries <small>On-device ML demo model · check the suggestion</small></div><label for="requestCountInput">How many customers asked?</label><select id="requestCountInput"><option value="1">Just one</option><option value="2">2–3 customers</option><option value="4">4–5 customers</option><option value="6">More than 5</option></select><div class="form-actions"><button class="cancel-button" value="cancel">Cancel</button><button class="primary-button" id="saveRequest" value="default">Add request <span>→</span></button></div></form></dialog>
+  <button class="assistant-launcher" id="assistantToggle" type="button" aria-expanded="false" aria-controls="assistantPanel"><span aria-hidden="true">✳</span><span>Mesh Assistant</span></button>
+  <section class="assistant-panel" id="assistantPanel" aria-label="Mesh Assistant" hidden>
+    <header class="assistant-header"><span class="assistant-mark" aria-hidden="true">✳</span><div><b>Mesh Assistant</b><small>Local demo · sample workspace data</small></div><button type="button" id="assistantClose" class="assistant-close" aria-label="Close assistant">×</button></header>
+    <div class="assistant-messages" id="assistantMessages" role="log" aria-live="polite" aria-relevant="additions">
+      <div class="assistant-message assistant-reply"><b>Hello! I can help you explore Merchant Mesh.</b><p>Ask about demand signals, voice requests, product categories, or how this demo handles your data.</p>
+        <div class="assistant-suggestions"><button type="button" data-prompt="What should I consider stocking?">What should I consider stocking?</button><button type="button" data-prompt="How do I record a voice request?">How do I record a voice request?</button><button type="button" data-prompt="Where is my request data saved?">Where is my request data saved?</button></div>
+      </div>
+    </div>
+    <div class="assistant-disclaimer">Demo assistant: replies use built-in guidance and sample data; no hosted AI model is connected.</div>
+    <form class="assistant-composer" id="assistantForm"><input id="assistantInput" type="text" placeholder="Ask a question…" autocomplete="off" maxlength="240" aria-label="Ask Mesh Assistant"><button type="submit" aria-label="Send message">↑</button></form>
+  </section>
   <div class="toast" id="toast" role="status"></div>
-  <script src="app.js?v=voice-ml-01"></script>
+  <script src="app.js?v=assistant-v1"></script>
   <script src="pages.js?v=voice-ml-01"></script>
 </body>
 </html>
